@@ -41,6 +41,7 @@ return [
                 'annotations' => [
                     base_path('app'),
                     base_path('Modules'),
+                    base_path('config'),
                 ],
 
             ],

@@ -11,11 +11,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use OpenApi\Attributes as OA;
 
-#[OA\Info(
-    version: "1.0.0",
-    title: "Sample API",
-    description: "API documentation using swagger-php with attributes"
-)]
 class AuthController extends Controller
 {
     /**
