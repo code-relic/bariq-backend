@@ -9,12 +9,38 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use OpenApi\Attributes as OA;
 
+#[OA\Info(
+    version: "1.0.0",
+    title: "Sample API",
+    description: "API documentation using swagger-php with attributes"
+)]
 class AuthController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
+    #[OA\Post(
+        path: "/api/v1/auth/login",
+        requestBody: new OA\RequestBody(
+            description: "User login data",
+            required: true,
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: "email", type: "string", format: "email"),
+                    new OA\Property(property: "password", type: "string")
+                ],
+                required: ["email", "password"]
+            )
+        ),
+        responses: [
+            new OA\Response(response: 200, description: "Login successful"),
+            new OA\Response(response: 401, description: "Unauthorized"),
+            new OA\Response(response: 403, description: "Forbidden"),
+            new OA\Response(response: 422, description: "Unprocessable Entity")
+        ]
+    )]
     public function login(Request $request)
     {
         {
