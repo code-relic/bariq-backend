@@ -1,3 +1,9 @@
 {
-    "Posts": true
+    "Posts": true,
+    "Teams": true,
+    "Users": true,
+    "Projects": true,
+    "Payments": true,
+    "Auth": true,
+    "GG": true
 }
