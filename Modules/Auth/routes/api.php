@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Modules\Auth\Http\Controllers\AuthController;
+use Modules\Auth\Http\Controllers\TwoFactorAuthController;
 
 /*
  *--------------------------------------------------------------------------
@@ -14,9 +15,10 @@ use Modules\Auth\Http\Controllers\AuthController;
  *
 */
 
-Route::prefix('auth')->group(function () {
+Route::prefix('v1/auth')->group(function () {
     Route::post("/register",[AuthController::class,"register"]);
-    Route::get("/register",function(){
-        return "ghellow";
+    Route::post("/login",[AuthController::class,"login"]);
+    Route::prefix("2fa")->group(function(){
+        Route::get("/",[TwoFactorAuthController::class,"GetMethods"]);
     });
 });

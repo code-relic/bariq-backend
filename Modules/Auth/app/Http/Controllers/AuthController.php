@@ -1,20 +1,63 @@
 <?php
 
 namespace Modules\Auth\Http\Controllers;
-
+use Modules\Users\Models\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function login()
+    public function login(Request $request)
     {
-        return "hellow from api";
+        {
+            // Define the validation rules
+            $rules = [
+                'email' => 'required|email',
+                'password' => 'required|min:5|max:40',
+            ];
+    
+            // Perform the validation
+            $validator = Validator::make($request->all(), $rules);
+    
+            // Check if the validation fails
+            if ($validator->fails()) {
+                // Return a JSON response with validation errors
+                return response()->json([
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+    
+            // Attempt to authenticate the user
+            if (!Auth::attempt($request->only('email', 'password'))) {
+                return response()->json([
+                    'message' => 'Invalid email or password'
+                ], 401);
+            }
+    
+            // Regenerate session ID
+            $request->session()->regenerate();
+
+            
+            $myUser=Auth::user();
+            if(!$myUser->is_2fa_enabled){
+                return response()->json([
+                    'message' => 'Two-factor authentication required',
+                    '2fa_required' => true,
+                ], 403); // Use 403 Forbidden status
+            }
+            // Return a success response
+            return response()->json([
+                'message' => 'Login successful',
+            ]);
+        }
     }
 
     /**
@@ -23,52 +66,41 @@ class AuthController extends Controller
     public function register(Request $request)
 
     {
-        $validated = $request->validate([
+        // Define the validation rules
+        $rules = [
             'name' => 'required|max:255',
-            'email'=>'required|email',
-            'password' => 'required',
+            'email' => 'required|email',
+            'password' => 'required|min:5|max:40',
+        ];
+
+        // Perform the validation
+        $validator = Validator::make($request->all(), $rules);
+
+        // Check if the validation fails
+        if ($validator->fails()) {
+            // Return a JSON response with validation errors
+            return response()->json([
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        // If validation passes, proceed with registration logic
+        $validatedData = $validator->validated();
+
+        // You can then create the user or perform other actions
+        // For example:
+        User::create([
+            'name' => $validatedData['name'],
+            'email' => $validatedData['email'],
+            'password' => bcrypt($validatedData['password']),
+            'is_2fa_enabled'=>false
         ]);
-        
-        
-        return $validated;
-    }
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
 
-    /**
-     * Show the specified resource.
-     */
-    public function show($id)
-    {
-        return view('auth::show');
+        // Return a success response
+        return response()->json([
+            'message' => 'User registered successfully',
+            'data' => $validatedData
+        ], 201);
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit($id)
-    {
-        return view('auth::edit');
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy($id)
-    {
-        //
-    }
+ 
 }
