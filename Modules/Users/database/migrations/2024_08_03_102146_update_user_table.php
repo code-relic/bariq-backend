@@ -21,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropColumns('is_2fa_enabled');
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('is_2fa_enabled');
+        });
     }
 };
