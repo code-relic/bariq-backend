@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('name', 100);
             $table->timestamps();
-            $table->integer('owner_id');
-            $table->integer('plans_id');
+            $table->unsignedBigInteger('owner_id');
+            $table->unsignedBigInteger('plans_id');
 
             //? Forginkeys
             $table->foreign('owner_id')->references('id')->on('users')->onDelete('cascade');
