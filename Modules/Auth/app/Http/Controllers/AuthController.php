@@ -1,6 +1,7 @@
 <?php
 
 namespace Modules\Auth\Http\Controllers;
+
 use Modules\Users\Models\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
@@ -9,6 +10,8 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Modules\Auth\Http\Requests\LoginRequest;
+use Modules\Auth\Http\Requests\RegisterRequest;
 use OpenApi\Attributes as OA;
 
 class AuthController extends Controller
@@ -17,6 +20,10 @@ class AuthController extends Controller
      * Display a listing of the resource.
      */
     #[OA\Post(
+        tags: ["auth"],
+        parameters: [
+            new OA\Parameter(ref: "#/components/parameters/Accept")
+        ],
         path: "/api/v1/auth/login",
         requestBody: new OA\RequestBody(
             description: "User login data",
@@ -36,92 +43,79 @@ class AuthController extends Controller
             new OA\Response(response: 422, description: "Unprocessable Entity")
         ]
     )]
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
-        {
-            // Define the validation rules
-            $rules = [
-                'email' => 'required|email',
-                'password' => 'required|min:5|max:40',
-            ];
-    
-            // Perform the validation
-            $validator = Validator::make($request->all(), $rules);
-    
-            // Check if the validation fails
-            if ($validator->fails()) {
-                // Return a JSON response with validation errors
-                return response()->json([
-                    'errors' => $validator->errors()
-                ], 422);
-            }
-    
-            // Attempt to authenticate the user
-            if (!Auth::attempt($request->only('email', 'password'))) {
-                return response()->json([
-                    'message' => 'Invalid email or password'
-                ], 401);
-            }
-    
-            // Regenerate session ID
-            $request->session()->regenerate();
 
-            
-            $myUser=Auth::user();
-            if(!$myUser->is_2fa_enabled){
-                return response()->json([
-                    'message' => 'Two-factor authentication required',
-                    '2fa_required' => true,
-                ], 403); // Use 403 Forbidden status
-            }
-            // Return a success response
+        // Attempt to authenticate the user
+        if (!Auth::attempt($request->safe()->only(['email', 'password']))) {
             return response()->json([
-                'message' => 'Login successful',
-            ]);
+                'message' => 'Invalid email or password'
+            ], 401);
         }
+
+        // Regenerate session ID
+        $request->session()->regenerate();
+
+
+        if (!Auth::user()->is_2fa_enabled) {
+            return response()->json([
+                'message' => 'Two-factor authentication required',
+                '2fa_required' => true,
+            ], 403); // Use 403 Forbidden status
+        }
+        // Return a success response
+        return response()->json([
+            'message' => 'Login successful',
+        ]);
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function register(Request $request)
+    #[OA\Post(
+        tags: ["auth"],
+        parameters: [
+            new OA\Parameter(ref: "#/components/parameters/Accept")
+        ],
+        path: "/api/v1/auth/register",
+        requestBody: new OA\RequestBody(
+            description: "Registration data",
+            required: true,
+
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: "name", type: "string"),
+                    new OA\Property(property: "email", type: "string", format: "email"),
+                    new OA\Property(property: "password", type: "string", format: "password")
+                ],
+                required: ["name", "email", "password"]
+            )
+        ),
+        responses: [
+            new OA\Response(response: 200, description: "Registration successful"),
+            new OA\Response(response: 422, description: "Unprocessable entity")
+        ]
+    )]
+
+    public function register(RegisterRequest $request)
 
     {
-        // Define the validation rules
-        $rules = [
-            'name' => 'required|max:255',
-            'email' => 'required|email',
-            'password' => 'required|min:5|max:40',
-        ];
 
-        // Perform the validation
-        $validator = Validator::make($request->all(), $rules);
-
-        // Check if the validation fails
-        if ($validator->fails()) {
-            // Return a JSON response with validation errors
-            return response()->json([
-                'errors' => $validator->errors()
-            ], 422);
-        }
-
-        // If validation passes, proceed with registration logic
-        $validatedData = $validator->validated();
+        $validated = $request->validated();
 
         // You can then create the user or perform other actions
         // For example:
         User::create([
-            'name' => $validatedData['name'],
-            'email' => $validatedData['email'],
-            'password' => bcrypt($validatedData['password']),
-            'is_2fa_enabled'=>false
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => bcrypt($validated['password']),
+            'is_2fa_enabled' => false
         ]);
 
         // Return a success response
         return response()->json([
             'message' => 'User registered successfully',
-            'data' => $validatedData
+            'data' => $validated
         ], 201);
     }
- 
 }
