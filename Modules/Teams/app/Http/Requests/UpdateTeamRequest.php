@@ -12,7 +12,7 @@ class UpdateTeamRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'sometimes|string|max:255',
+            'name' => 'required|string|max:255',
         ];
     }
 
