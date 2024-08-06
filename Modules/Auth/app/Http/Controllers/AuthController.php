@@ -4,15 +4,12 @@ namespace Modules\Auth\Http\Controllers;
 
 use Modules\Users\Models\User;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Request;
 use Modules\Auth\Http\Requests\LoginRequest;
 use Modules\Auth\Http\Requests\RegisterRequest;
 use OpenApi\Attributes as OA;
+
 
 class AuthController extends Controller
 {
@@ -37,10 +34,10 @@ class AuthController extends Controller
             )
         ),
         responses: [
-            new OA\Response(response: 200, description: "Login successful"),
-            new OA\Response(response: 401, description: "Unauthorized"),
-            new OA\Response(response: 403, description: "Forbidden"),
-            new OA\Response(response: 422, description: "Unprocessable Entity")
+            new OA\Response(response: 200, description: "Login successful", content: new OA\JsonContent()),
+            new OA\Response(response: 401, description: "Unauthorized", content: new OA\JsonContent()),
+            new OA\Response(response: 403, description: "Forbidden", content: new OA\JsonContent()),
+            new OA\Response(response: 422, description: "Unprocessable Entity", content: new OA\JsonContent())
         ]
     )]
     public function login(LoginRequest $request)
@@ -57,7 +54,7 @@ class AuthController extends Controller
         $request->session()->regenerate();
 
 
-        if (!Auth::user()->is_2fa_enabled) {
+        if (Auth::user()->is_2fa_enabled) {
             return response()->json([
                 'message' => 'Two-factor authentication required',
                 '2fa_required' => true,
@@ -68,32 +65,27 @@ class AuthController extends Controller
             'message' => 'Login successful',
         ]);
     }
-
-    /**
-     * Show the form for creating a new resource.
-     */
     #[OA\Post(
-        tags: ["auth"],
+        path: "/api/v1/auth/register",
+        requestBody: new OA\RequestBody(
+            description: "User data",
+            required: true,
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: "email", type: "string", format: "email"),
+                    new OA\Property(property: "name", type: "string"),
+                    new OA\Property(property: "password", type: "string", format: "password")
+                ],
+                required: ["email", "name", "password"]
+            )
+        ),
         parameters: [
             new OA\Parameter(ref: "#/components/parameters/Accept")
         ],
-        path: "/api/v1/auth/register",
-        requestBody: new OA\RequestBody(
-            description: "Registration data",
-            required: true,
-
-            content: new OA\JsonContent(
-                properties: [
-                    new OA\Property(property: "name", type: "string"),
-                    new OA\Property(property: "email", type: "string", format: "email"),
-                    new OA\Property(property: "password", type: "string", format: "password")
-                ],
-                required: ["name", "email", "password"]
-            )
-        ),
+        tags: ["auth"],
         responses: [
-            new OA\Response(response: 200, description: "Registration successful"),
-            new OA\Response(response: 422, description: "Unprocessable entity")
+            new OA\Response(response: 200, description: "OK", content: new OA\JsonContent()),
+            new OA\Response(response: 422, description: "Unprocessable Entity", content: new OA\JsonContent())
         ]
     )]
 
@@ -117,5 +109,16 @@ class AuthController extends Controller
             'message' => 'User registered successfully',
             'data' => $validated
         ], 201);
+    }
+
+    public function logout(Request $request)
+    {
+        Auth::logout();
+
+        $request->session()->invalidate();
+
+        $request->session()->regenerateToken();
+
+        return redirect('/');
     }
 }

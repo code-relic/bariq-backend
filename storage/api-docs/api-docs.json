@@ -44,16 +44,36 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Login successful"
+                        "description": "Login successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
                     },
                     "401": {
-                        "description": "Unauthorized"
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
                     },
                     "403": {
-                        "description": "Forbidden"
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
                     },
                     "422": {
-                        "description": "Unprocessable Entity"
+                        "description": "Unprocessable Entity",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
                     }
                 }
             }
@@ -63,7 +83,6 @@
                 "tags": [
                     "auth"
                 ],
-                "summary": "Show the form for creating a new resource.",
                 "operationId": "25751c40a55442e855a5db0257f3e0ad",
                 "parameters": [
                     {
@@ -71,23 +90,23 @@
                     }
                 ],
                 "requestBody": {
-                    "description": "Registration data",
+                    "description": "User data",
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
                                 "required": [
-                                    "name",
                                     "email",
+                                    "name",
                                     "password"
                                 ],
                                 "properties": {
-                                    "name": {
-                                        "type": "string"
-                                    },
                                     "email": {
                                         "type": "string",
                                         "format": "email"
+                                    },
+                                    "name": {
+                                        "type": "string"
                                     },
                                     "password": {
                                         "type": "string",
@@ -101,10 +120,47 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Registration successful"
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
                     },
                     "422": {
-                        "description": "Unprocessable entity"
+                        "description": "Unprocessable Entity",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/auth/2fa": {
+            "get": {
+                "tags": [
+                    "auth",
+                    "2fa"
+                ],
+                "operationId": "203033caec1122bb47582574362c31db",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
                     }
                 }
             }
@@ -127,6 +183,10 @@
         {
             "name": "auth",
             "description": "auth"
+        },
+        {
+            "name": "2fa",
+            "description": "2fa"
         }
     ]
 }

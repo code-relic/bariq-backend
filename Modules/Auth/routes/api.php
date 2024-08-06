@@ -20,5 +20,5 @@ Route::prefix('v1/auth')->group(function () {
     Route::post("/login",[AuthController::class,"login"]);
     Route::prefix("2fa")->group(function(){
         Route::get("/",[TwoFactorAuthController::class,"GetMethods"]);
-    });
+    })->middleware(['auth:sanctum']);
 });
