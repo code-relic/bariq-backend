@@ -3,9 +3,11 @@
 namespace Modules\Teams\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
+use Modules\Teams\Http\Requests\CreateTeamRequest;
+use Modules\Teams\Http\Requests\UpdateTeamRequest;
+use Modules\Teams\Models\Team;
 
 class TeamsController extends Controller
 {
@@ -14,23 +16,24 @@ class TeamsController extends Controller
      */
     public function index()
     {
-        return view('teams::index');
-    }
+        $teams = Team::all();
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        return view('teams::create');
+        return response()->json($teams);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): RedirectResponse
+    public function store(CreateTeamRequest $request)
     {
-        //
+        $validated = $request->validated();
+
+        $team = Team::create([
+            "name" => $validated["name"],
+            "owner_id"=> Auth::user()->id,
+        ]);
+
+        return response()->json($team, 201);
     }
 
     /**
@@ -38,23 +41,20 @@ class TeamsController extends Controller
      */
     public function show($id)
     {
-        return view('teams::show');
-    }
+        $team = Team::findOrFail($id);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit($id)
-    {
-        return view('teams::edit');
+        return response()->json($team);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id): RedirectResponse
+    public function update(UpdateTeamRequest $request, $id)
     {
-        //
+        $team = Team::findOrFail($id);
+        $team->update($request->validated());
+
+        return response()->json($team);
     }
 
     /**
@@ -62,6 +62,9 @@ class TeamsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $team = Team::findOrFail($id);
+        $team->delete();
+
+        return response()->json(null, 204);
     }
 }
