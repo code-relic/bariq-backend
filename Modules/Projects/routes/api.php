@@ -14,6 +14,6 @@ use Modules\Projects\Http\Controllers\ProjectsController;
  *
 */
 
-Route::prefix('v1')->group(function () {
+Route::middleware(['auth:sanctum'])->prefix('v1')->group(function () {
     Route::apiResource('projects', ProjectsController::class)->names('projects');
 });
