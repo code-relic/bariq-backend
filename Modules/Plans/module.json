@@ -1,0 +1,11 @@
+{
+    "name": "Plans",
+    "alias": "plans",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\Plans\\Providers\\PlansServiceProvider"
+    ],
+    "files": []
+}

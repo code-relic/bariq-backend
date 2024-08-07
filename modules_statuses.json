@@ -5,5 +5,6 @@
     "Projects": true,
     "Payments": true,
     "Auth": true,
-    "GG": true
+    "GG": true,
+    "Plans": true
 }
