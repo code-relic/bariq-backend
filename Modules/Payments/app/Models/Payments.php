@@ -5,6 +5,7 @@ namespace Modules\Payments\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\Payments\Database\Factories\PaymentsFactory;
+use Modules\Plans\Models\Plans;
 use Modules\Users\Models\User;
 use Modules\Teams\Models\Team;
 
@@ -17,7 +18,8 @@ class Payments extends Model
      */
     protected $fillable = [
         "amount",
-        "status"
+        "status",
+        "plans_id"
     ];
 
     // Define the relationship to the User model
@@ -32,7 +34,12 @@ class Payments extends Model
         return $this->belongsTo(Team::class, 'teams_id');
     }
 
-    protected static function newFactory(): PaymentsFactory
+    public function plan() {
+        return $this->belongsTo(Plans::class, 'plans_id');
+
+    }
+
+    protected static function newFactory()
     {
         //return PaymentsFactory::new();
     }
