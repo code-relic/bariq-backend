@@ -5,6 +5,7 @@ namespace Modules\Teams\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\Teams\Database\Factories\TeamFactory;
+use Modules\Users\Models\User;
 
 class Team extends Model
 {
@@ -19,9 +20,9 @@ class Team extends Model
         'plans_id',
     ];
 
-    public function users()
+    public function members()
     {
-        return $this->belongsToMany(User::class, 'team_user');
+        return $this->belongsToMany(User::class, 'team_users');
     }
 
     public function owner()
