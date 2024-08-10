@@ -33,7 +33,14 @@ class TeamsController extends Controller
     )]
     public function index()
     {
-        $teams = Team::paginate(15);
+        $userId = auth()->id();
+
+        // Get teams where the user is either the owner or a member
+        $teams = Team::where('owner_id', $userId)
+            ->orWhereHas('members', function ($query) use ($userId) {
+                $query->where('user_id', $userId);
+            })
+            ->paginate(15);
 
         return response()->json($teams);
     }
@@ -96,7 +103,17 @@ class TeamsController extends Controller
     )]
     public function show($id)
     {
-        $team = Team::findOrFail($id);
+        $userId = auth()->id();
+
+        // Find the team where the user is either the owner or a member
+        $team = Team::where('id', $id)
+            ->where(function ($query) use ($userId) {
+                $query->where('owner_id', $userId)
+                    ->orWhereHas('members', function ($query) use ($userId) {
+                        $query->where('user_id', $userId);
+                    });
+            })
+            ->firstOrFail();
 
         return response()->json($team);
     }
@@ -134,7 +151,14 @@ class TeamsController extends Controller
     )]
     public function update(UpdateTeamRequest $request, $id)
     {
-        $team = Team::findOrFail($id);
+        $userId = auth()->id();
+
+        // Find the team where the user is the owner
+        $team = Team::where('id', $id)
+            ->where('owner_id', $userId)
+            ->firstOrFail();
+
+        // Update the team with the validated request data
         $team->update($request->validated());
 
         return response()->json($team);
@@ -160,10 +184,16 @@ class TeamsController extends Controller
             new OA\Response(response: 404, description: "Team not found", content: new OA\JsonContent()),
             new OA\Response(response: 401, description: "Unauthorized", content: new OA\JsonContent())
         ]
-    )]    
+    )]
     public function destroy($id)
     {
-        $team = Team::findOrFail($id);
+        $userId = auth()->id();
+
+        // Find the team where the user is the owner
+        $team = Team::where('id', $id)
+            ->where('owner_id', $userId)
+            ->firstOrFail();
+
         $team->delete();
 
         return response()->json(null, 204);
