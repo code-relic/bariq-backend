@@ -97,17 +97,20 @@ class AuthController extends Controller
 
         // You can then create the user or perform other actions
         // For example:
-        User::create([
+        $user =  User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => bcrypt($validated['password']),
             'is_2fa_enabled' => false
         ]);
 
+        
+        $user->sendEmailVerificationNotification();
+
+
         // Return a success response
         return response()->json([
-            'message' => 'User registered successfully',
-            'data' => $validated
+            'message' => 'User registered successfully'
         ], 201);
     }
 
