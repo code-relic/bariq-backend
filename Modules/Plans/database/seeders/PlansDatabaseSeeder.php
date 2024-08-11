@@ -3,6 +3,7 @@
 namespace Modules\Plans\Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Modules\Plans\Models\Plans;
 
 class PlansDatabaseSeeder extends Seeder
 {
@@ -11,6 +12,6 @@ class PlansDatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // $this->call([]);
+        Plans::factory()->count(10)->create();
     }
 }

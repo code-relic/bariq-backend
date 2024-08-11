@@ -4,6 +4,7 @@ namespace Modules\Plans\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Modules\Plans\Database\Factories\PlansFactory;
 
 class Plans extends Model
 {
@@ -19,6 +20,6 @@ class Plans extends Model
 
     protected static function newFactory()
     {
-        //return PlansFactory::new();
+        return PlansFactory::new();
     }
 }
