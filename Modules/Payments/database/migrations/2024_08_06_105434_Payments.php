@@ -17,12 +17,10 @@ return new class extends Migration {
             $table->timestamps();
             $table->unsignedBigInteger('payer_id');
             $table->unsignedBigInteger('teams_id');
-            $table->unsignedBigInteger('plans_id');
 
             //? Forginkeys
             $table->foreign('payer_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('teams_id')->references('id')->on('teams')->onDelete('cascade');
-            $table->foreign('plans_id')->references('id')->on('plans')->onDelete('cascade');
         });
     }
 
@@ -34,7 +32,6 @@ return new class extends Migration {
         Schema::table('payments', function (Blueprint $table) {
             $table->dropForeign(['payer_id']);
             $table->dropForeign(['teams_id']);
-            $table->dropForeign(['plans_id']);
         });
         Schema::dropIfExists('payments');
     }
