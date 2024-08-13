@@ -32,6 +32,6 @@ class Team extends Model
 
     protected static function newFactory(): TeamFactory
     {
-        //return TeamFactory::new();
+        return TeamFactory::new();
     }
 }
