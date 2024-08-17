@@ -19,4 +19,9 @@ class Project extends Model
     {
         return $this->belongsTo('Modules\Team\Entities\Team');
     }
+
+    public function users() {
+        return $this->belongsToMany(User::class, 'project_has_users');
+    }
+
 }
