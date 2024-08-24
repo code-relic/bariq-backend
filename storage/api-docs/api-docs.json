@@ -464,6 +464,136 @@
                 }
             }
         },
+        "/api/v1/team-invites/invite": {
+            "post": {
+                "tags": [
+                    "Teams"
+                ],
+                "summary": "Send a team invite.",
+                "operationId": "3e114bc78b05ade3686ca7800cc6914b",
+                "requestBody": {
+                    "description": "Send invite data",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "team_id",
+                                    "recipient_id"
+                                ],
+                                "properties": {
+                                    "team_id": {
+                                        "type": "integer"
+                                    },
+                                    "recipient_id": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Invite sent successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "invite": {
+                                            "type": "object",
+                                            "additionalProperties": true
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/team-invites/accept": {
+            "post": {
+                "tags": [
+                    "Teams"
+                ],
+                "summary": "Accept a team invite.",
+                "operationId": "45f33dd354f8e4bdb9484dd199d035bb",
+                "requestBody": {
+                    "description": "Accept invite data",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "invite_id"
+                                ],
+                                "properties": {
+                                    "invite_id": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Invite accepted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/teams": {
             "get": {
                 "tags": [
