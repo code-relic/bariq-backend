@@ -141,7 +141,8 @@
         "/api/v1/auth/2fa": {
             "get": {
                 "tags": [
-                    "auth"
+                    "auth",
+                    "2fa"
                 ],
                 "operationId": "203033caec1122bb47582574362c31db",
                 "responses": {
@@ -724,6 +725,10 @@
         {
             "name": "auth",
             "description": "auth"
+        },
+        {
+            "name": "2fa",
+            "description": "2fa"
         },
         {
             "name": "Projects",
