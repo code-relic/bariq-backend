@@ -104,7 +104,7 @@ class AuthController extends Controller
             'is_2fa_enabled' => false
         ]);
 
-        
+
         $user->sendEmailVerificationNotification();
 
 
