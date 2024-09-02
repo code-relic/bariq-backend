@@ -24,11 +24,18 @@ return new class extends migration
             $table->json('assets')->nullable();
             $table->string('docs', 2000)->nullable();
             $table->unsignedBigInteger('lists_id');
+            // relations
+            $table->foreign('projects_id')->references('id')->on('projects')->onDelete('cascade');
+            $table->foreign('projects_teams_id')->references('id')->on('teams')->onDelete('cascade');
         });
     }
 
     public function down()
     {
+        Schema::table('tasks', function (Blueprint $table) {
+            $table->dropForeign(['projects_id']);
+            $table->dropForeign(['projects_teams_id']);
+        });
         Schema::dropIfExists('tasks');
     }
 };
