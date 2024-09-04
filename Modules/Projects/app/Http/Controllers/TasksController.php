@@ -5,8 +5,10 @@ namespace Modules\Projects\Http\Controllers;
 use OpenApi\Attributes as OA;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Modules\Projects\Models\Tasks;
 use Modules\Projects\Http\Requests\StoreTaskRequest;
+use Modules\Projects\Models\Project;
 
 class TasksController extends Controller
 {
@@ -56,7 +58,6 @@ class TasksController extends Controller
                 properties: [
                     new OA\Property(property: "title", type: "string", description: "Title of the task"),
                     new OA\Property(property: "description", type: "string", description: "Description of the task"),
-                    new OA\Property(property: "projects_teams_id", type: "integer", description: "ID of the related team"),
                     new OA\Property(property: "docs", type: "file", description: "Documentation file"),
                     new OA\Property(property: "lists_id", type: "integer", description: "ID of the related list")
                 ],
@@ -72,7 +73,6 @@ class TasksController extends Controller
                         new OA\Property(property: "id", type: "string", description: "ULID of the created task"),
                         new OA\Property(property: "title", type: "string", description: "Title of the created task"),
                         new OA\Property(property: "description", type: "string", description: "Description of the created task"),
-                        new OA\Property(property: "projects_teams_id", type: "integer", description: "ID of the related team"),
                         new OA\Property(property: "docs", type: "file", description: "Documentation file"),
                         new OA\Property(property: "lists_id", type: "integer", description: "ID of the related list")
                     ]
@@ -85,8 +85,10 @@ class TasksController extends Controller
     public function store(StoreTaskRequest $request, $id)
     {
         $validatedData = $request->validated();
-        $validatedData["projects_id"] = 1;
-        $validatedData["projects_teams_id"] = 14;
+        $validatedData["projects_id"] = $id;
+        Log::info(Project::find($validatedData["projects_id"])["teams_id"]);
+
+        $validatedData["projects_teams_id"] = Project::find($validatedData["projects_id"])["teams_id"];
         Tasks::create($validatedData);
 
         return response()->json(['message' => 'Task created successfully'], 201);

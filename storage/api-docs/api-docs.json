@@ -500,10 +500,6 @@
                                         "description": "Description of the task",
                                         "type": "string"
                                     },
-                                    "projects_teams_id": {
-                                        "description": "ID of the related team",
-                                        "type": "integer"
-                                    },
                                     "docs": {
                                         "description": "Documentation file",
                                         "type": "file"
@@ -536,10 +532,6 @@
                                         "description": {
                                             "description": "Description of the created task",
                                             "type": "string"
-                                        },
-                                        "projects_teams_id": {
-                                            "description": "ID of the related team",
-                                            "type": "integer"
                                         },
                                         "docs": {
                                             "description": "Documentation file",
