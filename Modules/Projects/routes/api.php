@@ -18,5 +18,7 @@ use Modules\Projects\Http\Controllers\TasksController;
 Route::middleware(['auth:sanctum'])->prefix('v1/projects')->group(function () {
     Route::prefix('{id}/tasks')->group(function () {
         Route::post('/', [TasksController::class, 'store']);
+        Route::patch('/{task_id}', [TasksController::class, 'update']);
+        Route::delete('/{task_id}', [TasksController::class, 'delete']);
     });
 });

@@ -2,6 +2,7 @@
 
 namespace Modules\Projects\Models;
 
+use Modules\Teams\Models\Team;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
@@ -39,4 +40,18 @@ class Tasks extends Model
         'created_at' => 'date',
         'updated_at' => 'date',
     ];
+    public function projects()
+    {
+        return $this->belongsTo(Project::class, 'projects_id');
+    }
+
+    public function projectsTeams()
+    {
+        return $this->belongsTo(Team::class, 'projects_teams_id');
+    }
+
+    // public function lists()
+    // {
+    //     return $this->belongsTo(Lists::class, 'lists_id');
+    // }
 }
