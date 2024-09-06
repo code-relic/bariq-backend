@@ -568,6 +568,95 @@
             }
         },
         "/api/v1/projects/{project_id}/tasks/{task_id}": {
+            "get": {
+                "tags": [
+                    "Tasks"
+                ],
+                "operationId": "feb0dc6039e6ff9e24c651f4e36b06a6",
+                "parameters": [
+                    {
+                        "name": "project_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "task_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Task data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "title": {
+                                            "type": "string"
+                                        },
+                                        "description": {
+                                            "type": "string"
+                                        },
+                                        "start_date": {
+                                            "type": "string",
+                                            "format": "date"
+                                        },
+                                        "end_date": {
+                                            "type": "string",
+                                            "format": "date"
+                                        },
+                                        "created_at": {
+                                            "type": "string",
+                                            "format": "date"
+                                        },
+                                        "updated_at": {
+                                            "type": "string",
+                                            "format": "date"
+                                        },
+                                        "projects_id": {
+                                            "type": "string"
+                                        },
+                                        "projects_teams_id": {
+                                            "type": "string"
+                                        },
+                                        "assets": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "docs": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "lists_id": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            },
             "delete": {
                 "tags": [
                     "Tasks"
@@ -619,14 +708,6 @@
                         }
                     },
                     "404": {
-                        "description": "Task not found",
-                        "content": {
-                            "application/json": {
-                                "schema": {}
-                            }
-                        }
-                    },
-                    "405": {
                         "description": "Task not found",
                         "content": {
                             "application/json": {

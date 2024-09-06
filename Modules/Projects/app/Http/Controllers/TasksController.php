@@ -145,4 +145,50 @@ class TasksController extends Controller
             'success' => true
         ], 200);
     }
+
+    #[OA\Get(
+        path: "/api/v1/projects/{project_id}/tasks/{task_id}",
+        parameters: [
+            new OA\Parameter(
+                name: "project_id",
+                in: "path",
+                required: true,
+                schema: new OA\Schema(type: "string")
+            ),
+            new OA\Parameter(
+                name: "task_id",
+                in: "path",
+                required: true,
+                schema: new OA\Schema(type: "string")
+            )
+        ],
+        tags: ["Tasks"],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: "Task data",
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: "title", type: "string"),
+                        new OA\Property(property: "description", type: "string"),
+                        new OA\Property(property: "start_date", type: "string", format: "date"),
+                        new OA\Property(property: "end_date", type: "string", format: "date"),
+                        new OA\Property(property: "created_at", type: "string", format: "date"),
+                        new OA\Property(property: "updated_at", type: "string", format: "date"),
+                        new OA\Property(property: "projects_id", type: "string"),
+                        new OA\Property(property: "projects_teams_id", type: "string"),
+                        new OA\Property(property: "assets", type: "array", items: new OA\Items(type: "string")),
+                        new OA\Property(property: "docs", type: "array", items: new OA\Items(type: "string")),
+                        new OA\Property(property: "lists_id", type: "string")
+                    ]
+                )
+            ),
+            new OA\Response(response: 422, description: "Unprocessable Entity", content: new OA\JsonContent())
+        ]
+    )]
+    public function get($_, $task)
+    {
+
+        return response()->json(Tasks::findOrFail($task), 200);
+    }
 }
