@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Modules\Projects\Http\Controllers\ListsController;
 use Modules\Projects\Http\Controllers\ProjectsController;
 use Modules\Projects\Http\Controllers\TasksController;
 
@@ -16,7 +17,16 @@ use Modules\Projects\Http\Controllers\TasksController;
 */
 
 Route::middleware(['auth:sanctum'])->prefix('v1/projects')->group(function () {
-    Route::apiResource('projects', ProjectsController::class)->names('projects');
+    Route::resources(['projects' => ProjectsController::class]);
+    Route::prefix('{project_id}/lists')->group(function () {
+        Route::get('/', [ListsController::class, 'index'])->name('lists.index');
+        Route::post('/', [ListsController::class, 'store'])->name('lists.store');
+        Route::get('{list_id}', [ListsController::class, 'show'])->name('lists.show');
+        Route::put('{list_id}', [ListsController::class, 'update'])->name('lists.update');
+        Route::patch('{list_id}', [ListsController::class, 'update'])->name('lists.update');
+        Route::delete('{list_id}', [ListsController::class, 'destroy'])->name('lists.destroy');
+    });
+
     Route::prefix('{id}/tasks')->group(function () {
         Route::post('/', [TasksController::class, 'store']);
         Route::patch('/{task_id}', [TasksController::class, 'update']);
