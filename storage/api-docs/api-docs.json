@@ -464,6 +464,383 @@
                 }
             }
         },
+        "/api/v1/projects/{id}/tasks": {
+            "post": {
+                "tags": [
+                    "Tasks"
+                ],
+                "summary": "Create a new task for a project",
+                "description": "Creates a new task associated with a specific project",
+                "operationId": "1913cefcd033730e64c3f76b292c9dea",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the related project",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "title",
+                                    "projects_teams_id"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "description": "Title of the task",
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "description": "Description of the task",
+                                        "type": "string"
+                                    },
+                                    "docs": {
+                                        "description": "Documentation file",
+                                        "type": "file"
+                                    },
+                                    "lists_id": {
+                                        "description": "ID of the related list",
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "description": "ULID of the created task",
+                                            "type": "string"
+                                        },
+                                        "title": {
+                                            "description": "Title of the created task",
+                                            "type": "string"
+                                        },
+                                        "description": {
+                                            "description": "Description of the created task",
+                                            "type": "string"
+                                        },
+                                        "docs": {
+                                            "description": "Documentation file",
+                                            "type": "file"
+                                        },
+                                        "lists_id": {
+                                            "description": "ID of the related list",
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "0": {
+                            "securityScheme": "bearerAuth",
+                            "type": "http",
+                            "name": "Authorization",
+                            "in": "header",
+                            "scheme": "bearer"
+                        }
+                    }
+                ]
+            }
+        },
+        "/api/v1/projects/{project_id}/tasks/{task_id}": {
+            "get": {
+                "tags": [
+                    "Tasks"
+                ],
+                "operationId": "feb0dc6039e6ff9e24c651f4e36b06a6",
+                "parameters": [
+                    {
+                        "name": "project_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "task_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Task data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "title": {
+                                            "type": "string"
+                                        },
+                                        "description": {
+                                            "type": "string"
+                                        },
+                                        "start_date": {
+                                            "type": "string",
+                                            "format": "date"
+                                        },
+                                        "end_date": {
+                                            "type": "string",
+                                            "format": "date"
+                                        },
+                                        "created_at": {
+                                            "type": "string",
+                                            "format": "date"
+                                        },
+                                        "updated_at": {
+                                            "type": "string",
+                                            "format": "date"
+                                        },
+                                        "projects_id": {
+                                            "type": "string"
+                                        },
+                                        "projects_teams_id": {
+                                            "type": "string"
+                                        },
+                                        "assets": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "docs": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "lists_id": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Tasks"
+                ],
+                "summary": "Delete a task",
+                "description": "Delete a specific task within a project",
+                "operationId": "deleteTask",
+                "parameters": [
+                    {
+                        "name": "project_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "format": "uuid"
+                        }
+                    },
+                    {
+                        "name": "task_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Task not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "Tasks"
+                ],
+                "summary": "Update a task",
+                "description": "Update a specific task within a project",
+                "operationId": "updateTask",
+                "parameters": [
+                    {
+                        "name": "project_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "format": "uuid"
+                        }
+                    },
+                    {
+                        "name": "task_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "maxLength": 255,
+                                        "nullable": true
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "maxLength": 1200,
+                                        "nullable": true
+                                    },
+                                    "start_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "nullable": true
+                                    },
+                                    "end_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "nullable": true
+                                    },
+                                    "docs": {
+                                        "type": "string",
+                                        "maxLength": 2000,
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "success": {
+                                            "type": "boolean"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/team-invites/invite": {
             "post": {
                 "tags": [
@@ -863,6 +1240,10 @@
         {
             "name": "Projects",
             "description": "Projects"
+        },
+        {
+            "name": "Tasks",
+            "description": "Tasks"
         },
         {
             "name": "Teams",

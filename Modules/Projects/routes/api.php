@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Modules\Projects\Http\Controllers\ProjectsController;
+use Modules\Projects\Http\Controllers\TasksController;
 
 /*
  *--------------------------------------------------------------------------
@@ -14,6 +15,11 @@ use Modules\Projects\Http\Controllers\ProjectsController;
  *
 */
 
-Route::middleware(['auth:sanctum'])->prefix('v1')->group(function () {
-    Route::apiResource('projects', ProjectsController::class)->names('projects');
+Route::middleware(['auth:sanctum'])->prefix('v1/projects')->group(function () {
+    Route::prefix('{id}/tasks')->group(function () {
+        Route::post('/', [TasksController::class, 'store']);
+        Route::patch('/{task_id}', [TasksController::class, 'update']);
+        Route::get('/{task_id}', [TasksController::class, 'get']);
+        Route::delete('/{task_id}', [TasksController::class, 'delete']);
+    });
 });

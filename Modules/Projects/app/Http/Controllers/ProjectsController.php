@@ -179,7 +179,8 @@ class ProjectsController extends Controller
                     new OA\Property(property: "id", type: "integer"),
                     new OA\Property(property: "name", type: "string"),
                     new OA\Property(property: "teams_id", type: "integer")
-                ])            ),
+                ])
+            ),
             new OA\Response(
                 response: 404,
                 description: "Project not found",
